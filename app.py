@@ -2,7 +2,7 @@ import os
 from flask import Flask, render_template, request, jsonify, send_file
 import yt_dlp
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder='templates')
 
 # Temporary folder jahan file pehle save hogi
 TEMP_DIR = 'downloads_temp'
