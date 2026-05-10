@@ -1,6 +1,6 @@
 import os
 from flask import Flask, render_template, request, jsonify, send_file
-import yt_dlp
+import yt-dlp
 
 app = Flask(__name__, template_folder='templates')
 
