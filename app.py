@@ -15,6 +15,36 @@ def index():
 
 @app.route('/get_preview', methods=['POST'])
 def get_preview():
+    data = request.json
+    url = data.get('url')
+    if not url:
+        return jsonify({'error': 'URL is required'}), 400
+
+    ydl_opts = {
+        'quiet': True,
+        'no_warnings': True,
+        'format': 'best',
+        # Ye niche wali lines YouTube block se bachati hain
+        'http_headers': {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+            'Accept-Language': 'en-us,en;q=0.5',
+            'Sec-Fetch-Mode': 'navigate',
+        }
+    }
+
+    try:
+        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+            info = ydl.extract_info(url, download=False)
+            video_id = info.get('id')
+            return jsonify({
+                'embed_url': f"https://www.youtube.com/embed/{video_id}",
+                'title': info.get('title')
+            })
+    except Exception as e:
+        print(f"Error: {e}")
+        return jsonify({'error': str(e)}), 500
+def get_preview():
     url = request.json.get('url')
     try:
         ydl_opts = {'quiet': True}
